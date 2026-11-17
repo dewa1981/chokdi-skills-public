@@ -1,0 +1,147 @@
+<!doctype html>
+<!-- Investment brief template: 2 x A4, full-bleed, dark + light from ONE file.
+     Render:  html2pdf.sh this.html out.pdf 0     (Gotenberg, margins 0)
+     Then:    stirling_pdf.sh protect out.pdf out_wm.pdf "+60 12-000 0000" "" 0 "client"
+     Replace every {{PLACEHOLDER}}; delete blocks you have no data for instead of padding. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  /* ---- theme tokens: swap this block for the light variant ---- */
+  :root{
+    --bg:#0B0B0F; --ink:#E9E7E2; --card:#14141A; --line:rgba(232,199,122,.18);
+    --gold:#E8C77A; --label:#9C978C; --muted:#CFCBC2; --foot:#7E7A72;
+  }
+  body.light{
+    --bg:#FFFFFF; --ink:#1C1B18; --card:#FFFFFF; --line:rgba(138,106,30,.28);
+    --gold:#8A6A1E; --label:#57534B; --muted:#3B3934; --foot:#6B665E;
+  }
+  @page { size: A4; margin: 0; }
+  html, body { margin:0; padding:0; background: var(--bg); }
+  body { font-family:'Inter',system-ui,sans-serif; color:var(--ink);
+         -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  .serif{ font-family:'Playfair Display',Georgia,serif; }
+  .page{ width:210mm; height:297mm; padding:15mm 16mm 12mm; box-sizing:border-box;
+         position:relative; page-break-after:always; overflow:hidden; }
+  .page:last-child{ page-break-after:auto; }
+  .card{ background:var(--card); border:1px solid var(--line); border-radius:10px; }
+  .gold{ color:var(--gold); }
+  .goldline{ height:1px; background:linear-gradient(90deg,rgba(232,199,122,.85),rgba(232,199,122,.05)); }
+  .lbl{ font-size:7.6pt; letter-spacing:.16em; text-transform:uppercase; color:var(--label); }
+  .kpi{ font-size:17pt; font-weight:600; letter-spacing:-.01em; }
+  table{ border-collapse:collapse; width:100%; }
+  th{ font-size:8.2pt; letter-spacing:.12em; text-transform:uppercase; color:var(--label);
+      text-align:left; padding:5px 8px; border-bottom:1px solid var(--line); }
+  td{ font-size:9.2pt; padding:6px 8px; border-bottom:1px solid rgba(127,127,127,.22); }
+  td.num{ text-align:right; font-variant-numeric:tabular-nums; }
+  ul.dot{ list-style:none; padding:0; margin:0; }
+  ul.dot li{ position:relative; padding-left:12px; font-size:9.2pt; line-height:1.55;
+             color:var(--muted); margin-bottom:4px; }
+  ul.dot li:before{ content:''; position:absolute; left:0; top:7px; width:4px; height:4px;
+                    border-radius:50%; background:var(--gold); }
+  .foot{ position:absolute; left:16mm; right:16mm; bottom:8mm; font-size:7.6pt; color:var(--foot);
+         display:flex; justify-content:space-between; }
+</style>
+</head>
+<!-- add class="light" on body for the printable white variant -->
+<body>
+
+<!-- ============ PAGE 1 — the deal ============ -->
+<div class="page">
+  <div class="flex items-start justify-between">
+    <div>
+      <div class="lbl" style="letter-spacing:.34em">{{AGENT}} · PROPERTY ADVISORY</div>
+      <div class="serif" style="font-size:26pt;line-height:1.1;margin-top:6px">{{PROJECT}} Investment Brief</div>
+      <div class="gold" style="font-size:11pt;margin-top:4px">{{AREA}} · {{CITY}}</div>
+    </div>
+    <div class="text-right">
+      <div class="lbl">Prepared</div><div style="font-size:9.2pt">{{DATE}}</div>
+      <div class="lbl" style="margin-top:6px">Data source</div><div style="font-size:9.2pt">{{SOURCE}}</div>
+    </div>
+  </div>
+
+  <div class="goldline" style="margin:12px 0 16px"></div>
+
+  <div class="grid grid-cols-4 gap-3">
+    <div class="card" style="padding:10px 12px"><div class="lbl">Median price</div><div class="kpi">{{MEDIAN_PRICE}}</div></div>
+    <div class="card" style="padding:10px 12px"><div class="lbl">Median psf*</div><div class="kpi">{{MEDIAN_PSF}}</div></div>
+    <div class="card" style="padding:10px 12px"><div class="lbl">Transactions</div><div class="kpi">{{N}}</div></div>
+    <div class="card" style="padding:10px 12px"><div class="lbl">Window</div><div class="kpi" style="font-size:11pt;padding-top:4px">{{WINDOW}}</div></div>
+  </div>
+  <div style="font-size:7.6pt;color:var(--foot);margin-top:6px">
+    * psf is per sq ft of <b>land</b> ({{LAND_SQFT}} sf); on built-up ({{BUILT_SQFT}} sf) it is ≈ {{BUILT_PSF}}.
+  </div>
+
+  <div class="grid grid-cols-5 gap-4" style="margin-top:16px">
+    <div style="grid-column:span 3">
+      <div class="lbl" style="margin-bottom:6px">Typical unit profile</div>
+      <ul class="dot">{{UNIT_BULLETS}}</ul>
+    </div>
+    <div style="grid-column:span 2">
+      <div class="lbl" style="margin-bottom:6px">Positioning</div>
+      <div class="card" style="padding:12px;font-size:9.2pt;line-height:1.6;color:var(--muted)">{{POSITIONING}}</div>
+    </div>
+  </div>
+
+  <div style="margin-top:18px">
+    <div class="lbl" style="margin-bottom:4px">Recent transacted sales (filed)</div>
+    <table>
+      <thead><tr><th>SPA date</th><th>Address</th><th>Tenure</th><th style="text-align:right">Built-up</th><th style="text-align:right">Price</th><th style="text-align:right">PSF (land)</th></tr></thead>
+      <tbody>{{SALES_ROWS}}</tbody>
+    </table>
+    <div style="font-size:7.8pt;color:var(--foot);margin-top:5px">Shows {{SHOWN}} of {{N}} filed rows; the remainder sits behind the paid report.</div>
+  </div>
+
+  <!-- fills the lower third so the page does not look half-empty -->
+  <div style="margin-top:16px">
+    <div class="lbl" style="margin-bottom:5px">Before you make an offer — 5 checks</div>
+    <div class="grid grid-cols-2 gap-x-6" style="font-size:9pt;line-height:1.55;color:var(--muted)">
+      <div>{{CHECKS_LEFT}}</div>
+      <div>{{CHECKS_RIGHT}}<div class="gold" style="margin-top:8px">Never quote asking price as evidence of value.</div></div>
+    </div>
+  </div>
+
+  <div class="foot"><span>Prepared by {{AGENT}} · Property Advisory</span><span>Page 1 of 2</span></div>
+</div>
+
+<!-- ============ PAGE 2 — the market ============ -->
+<div class="page">
+  <div class="flex items-end justify-between">
+    <div class="serif" style="font-size:16pt">Market comparison</div>
+    <div class="lbl">{{PROJECT}} vs {{RIVAL}}</div>
+  </div>
+  <div class="goldline" style="margin:10px 0 14px"></div>
+
+  <table>
+    <thead><tr><th>Metric</th><th style="text-align:right">{{PROJECT}}</th><th style="text-align:right">{{RIVAL}}</th></tr></thead>
+    <tbody>{{COMPARISON_ROWS}}</tbody>
+  </table>
+
+  <div style="margin-top:16px">
+    <div class="lbl" style="margin-bottom:4px">Nearby comparables</div>
+    <table>
+      <thead><tr><th>Project</th><th style="text-align:right">Transactions</th><th style="text-align:right">Median price</th><th style="text-align:right">Median psf</th></tr></thead>
+      <tbody>{{COMPARABLE_ROWS}}</tbody>
+    </table>
+  </div>
+
+  <div class="grid grid-cols-2 gap-4" style="margin-top:16px">
+    <div class="card" style="padding:12px"><div class="lbl gold" style="margin-bottom:6px">If you are selling</div>
+      <div style="font-size:9pt;line-height:1.6;color:var(--muted)">{{SELLING}}</div></div>
+    <div class="card" style="padding:12px"><div class="lbl gold" style="margin-bottom:6px">If you are buying</div>
+      <div style="font-size:9pt;line-height:1.6;color:var(--muted)">{{BUYING}}</div></div>
+  </div>
+
+  <div style="margin-top:14px;font-size:7.8pt;color:var(--foot);line-height:1.55">
+    <b>Data notes.</b> Filed SPA records via {{SOURCE}}, captured {{DATE}}. Transacted data is published after
+    stamp duty is paid, so the newest month lags roughly 6–12 months. Free tier masks part of each project's
+    rows. Windows differ per area and samples are small (n = {{N}}) — indicative only, not a valuation.
+  </div>
+
+  <div class="foot"><span>{{AGENT}} · {{PHONE}}</span><span>Page 2 of 2</span></div>
+</div>
+
+</body>
+</html>

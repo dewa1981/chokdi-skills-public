@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<!-- Skeleton laporan A4 WeasyPrint: cover + tabel + callout + timeline.
+     Semua aturan anti-bad-break sudah terpasang — isi teksnya saja.
+     Render: PYTHONPATH=/opt/data/pylibs python3 -c \
+       "from weasyprint import HTML; d=HTML(filename='f.html').render(); d.write_pdf('f.pdf'); print(len(d.pages))
+     Untuk versi Mandarin: tukar urutan font (WenQuanYi duluan) + line-height 1.7. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{{TITLE}}</title>
+<style>
+  @page {
+    size: A4; margin: 20mm 18mm 18mm 18mm;
+    @bottom-center { content: "{{DOC_NAME}}  ·  page " counter(page) " / " counter(pages);
+      font-family: "DejaVu Sans", sans-serif; font-size: 8pt; color: #8a7a55; }
+  }
+  @page cover { margin: 0; @bottom-center { content: none; } }
+  * { box-sizing: border-box; }
+  body { font-family: "DejaVu Sans", "WenQuanYi Zen Hei", sans-serif;
+    font-size: 10.2pt; line-height: 1.55; color: #1d1d1f; margin: 0; }
+  h1 { font-size: 20pt; margin: 0 0 4mm 0; }
+  h2 { font-size: 13.5pt; margin: 9mm 0 3mm 0; color: #7a5c12;
+    border-bottom: 1.5pt solid #d9b95c; padding-bottom: 1.5mm; }
+  h1, h2, h3 { break-after: avoid; page-break-after: avoid; }
+  p { margin: 0 0 2.6mm 0; }
+  .lead { font-size: 11.5pt; line-height: 1.6; }
+
+  /* Cover: satu-satunya tempat yang boleh punya page break paksa */
+  .cover { page: cover; height: 297mm; width: 210mm; background: #0b0b0c;
+    color: #f2eee2; padding: 26mm 20mm; position: relative;
+    border-top: 6pt solid #c9a227; }
+  .cover h1 { color: #fff; font-size: 33pt; line-height: 1.12; }
+  .cover .meta { position: absolute; left: 20mm; right: 20mm; bottom: 24mm;
+    font-size: 9pt; color: #8d8778; border-top: 0.6pt solid #3a3630; padding-top: 5mm; }
+
+  /* Tabel: baris tidak boleh pecah */
+  table { width: 100%; border-collapse: collapse; margin: 3mm 0 4mm 0; font-size: 9.4pt; }
+  tr { break-inside: avoid; page-break-inside: avoid; }
+  th { background: #14110c; color: #f4e9c8; text-align: left; padding: 2.4mm 3mm; }
+  td { padding: 2.4mm 3mm; border-bottom: 0.6pt solid #e2dccb; vertical-align: top; }
+  tr:nth-child(even) td { background: #faf7ef; }
+
+  /* Callout */
+  .box { border: 0.8pt solid #d9b95c; background: #fdfaf1; padding: 4mm 5mm;
+    margin: 4mm 0; border-radius: 1.5mm;
+    break-inside: avoid; page-break-inside: avoid; }
+  .box .t { font-weight: bold; color: #7a5c12; font-size: 9pt; margin-bottom: 1.5mm; }
+
+  /* Baris dua kolom: TABLE, bukan flex */
+  .row { display: table; width: 100%; margin-bottom: 3mm; break-inside: avoid; }
+  .row .k { display: table-cell; width: 22mm; font-weight: bold; color: #a8871f; }
+  .row .v { display: table-cell; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <h1>{{TITLE}}</h1>
+  <div class="meta">{{DOC_NAME}} &nbsp;·&nbsp; {{DATE}}</div>
+</div>
+
+<h1>1. {{SECTION}}</h1>
+<p class="lead">{{LEAD_PARAGRAPH}}</p>
+
+<table>
+  <tr><th>Aspect</th><th>Option A</th><th>Option B</th></tr>
+  <tr><td>{{K1}}</td><td>{{V1}}</td><td>{{V2}}</td></tr>
+</table>
+
+<div class="box">
+  <div class="t">KEY POINT</div>
+  {{CALLOUT}}
+</div>
+
+<div class="row"><div class="k">07:00</div><div class="v">{{TIMELINE_ENTRY}}</div></div>
+
+</body>
+</html>
